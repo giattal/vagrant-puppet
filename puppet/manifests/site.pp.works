@@ -1,0 +1,31 @@
+node 'web1', 'web2' {
+  class { 'nginx': }
+} 
+
+node 'balancer' {
+
+  include ::haproxy
+   
+  haproxy::listen { 'webservers':
+    collect_exported => false,
+    ipaddress        => $::ipaddress,
+    ports            => '80',
+  }
+
+  haproxy::balancermember { 'web1':
+    listening_service => 'webservers',
+    server_names      => 'web1',
+    ipaddresses       => '192.168.10.11',
+    ports             => '80',
+    options           => 'check',
+  }
+
+  haproxy::balancermember { 'web2':
+    listening_service => 'webservers',
+    server_names      => 'web2',
+    ipaddresses       => '192.168.10.12',
+    ports             => '80',
+    options           => 'check',
+  }
+}
+
