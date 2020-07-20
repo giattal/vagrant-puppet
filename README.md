@@ -24,6 +24,11 @@ VM1 (LB and Prometheus)  |           +---------+
 | App | version |
 | ------ | ------ |
 | Vagrant | 2.2.9 |
+
+### Installed in process:
+
+| App | version |
+| ------ | ------ |
 | Puppet | 6.12.0 |
 | Facter | 3.14.7 |
 
