@@ -1,6 +1,24 @@
 # vagrant-puppet
 Automation with Puppet + Vagrant
 
+* 3 VMs
+* 2 webservers running nginx + node exporter.
+* 1 balancer server that runs Haproxy + Prometheus + Alert Manager + node exporter.
+
+
+```sh
+                                   VM2 (Web server)
+                                     +---------+
+                         +-------->  |  Nginx  |
+VM1 (LB and Prometheus)  |           +---------+
+    +------------+       |
+    |  HAProxy   +-------+
+    +------------+       |         VM3 (Web server)
+                         |           +---------+
+                         +-------->  |  Nginx  |
+                                     +---------+
+```
+
 ### Pre :
 
 | App | version |
