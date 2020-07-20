@@ -5,7 +5,6 @@ Vagrant.configure(2) do |config|
 
   config.vm.box = "icalvete/ror-ubuntu-18.04-64-puppet"
   config.vm.box_version = "0.0.1"
-#   config.vm.box = "puppetlabs/ubuntu-16.04-64-puppet"
 
   config.vm.define "web-a" do |web|
     web.vm.hostname = "web-a"

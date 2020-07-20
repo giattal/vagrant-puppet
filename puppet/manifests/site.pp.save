@@ -1,10 +1,9 @@
 node 'web-a', 'web-b' {
   include nginx
-  include prometheus::node_exporter
 } 
 
 node 'balancer' {
-  
+
   include ::haproxy
 
   haproxy::listen { 'web':
@@ -47,7 +46,6 @@ node 'balancer' {
   }
 
   class { 'prometheus':
-    init_style => 'systemd',
     manage_prometheus_server => true,
     version                  => '2.0.0',
     alerts                   => {
@@ -56,13 +54,13 @@ node 'balancer' {
           'name'  => 'alert.rules',
           'rules' => [
             {
-              'alert'       => 'InstanceHighCpuLoad',
-              'expr'        => '100 - (avg by(instance) (irate(node_cpu_seconds_total{mode="idle"}[5m])) * 100) > 80',
-              'for'         => '5m',
-              'labels'      => {'severity' => 'warning'},
+              'alert'       => 'InstanceDown',
+              'expr'        => 'up == 0',
+              'for'         => '1m',
+              'labels'      => {'severity' => 'page'},
               'annotations' => {
-                'summary'     => 'Instance high CPU load (instance {{ $labels.instance }})',
-                'description' => 'CPU load is > 80%\n  VALUE = {{ $value }}\n  LABELS: {{ $labels }}.'
+                'summary'     => 'Instance {{ $labels.alias }} down',
+                'description' => '{{ $labels.alias }} of job {{ $labels.job }} has been down for more than 1 minutes.'
               },
             },
           ],
@@ -111,7 +109,7 @@ node 'balancer' {
   class { 'prometheus::alertmanager':
     version   => '0.13.0',
     route     => {
-      'group_by'        => ['alertname', 'cluster', 'service'],
+      'group_by'        => ['alertname', 'cluster', 'service', 'alias'],
       'group_wait'      => '30s',
       'group_interval'  => '5m',
       'repeat_interval' => '3h',
@@ -131,13 +129,4 @@ node 'balancer' {
       },
     ],
   }
-  
-  class { 'prometheus::node_exporter':
-    version            => $version,
-    collectors_disable => $collectors_disable,
-    collectors_enable  => $collectors_enable,
-    extra_options      => $extra_options,
-  }
 }
-
-
