@@ -1,5 +1,5 @@
-node 'web1', 'web2' {
-  class { 'nginx': }
+node 'web-a', 'web-b' {
+  include nginx
 } 
 
 node 'balancer' {
@@ -9,7 +9,7 @@ node 'balancer' {
   haproxy::listen { 'web':
     collect_exported => false,
     ipaddress        => '0.0.0.0',
-    ports            => '8080',
+    ports            => '80',
     mode             => 'http',
     options          => {
       'option'  => ['httplog'],
@@ -17,18 +17,18 @@ node 'balancer' {
     }
   }
 
-  haproxy::balancermember { 'web1':
+  haproxy::balancermember { 'web-a':
     listening_service => 'web',
-    server_names      => 'web1',
-    ipaddresses       => '192.168.10.11',
+    server_names      => 'web-a',
+    ipaddresses       => '192.168.10.111',
     ports             => '80',
     options           => 'check',
   }
 
-  haproxy::balancermember { 'web2':
+  haproxy::balancermember { 'web-b':
     listening_service => 'web',
-    server_names      => 'web2',
-    ipaddresses       => '192.168.10.12',
+    server_names      => 'web-b',
+    ipaddresses       => '192.168.10.112',
     ports             => '80',
     options           => 'check',
   }
@@ -85,8 +85,12 @@ node 'balancer' {
         'scrape_timeout'  => '5s',
         'static_configs'  => [
           {
-            'targets' => ['192.168.10.11:9100'],
-            'labels'  => {'alias' => 'web1'}
+            'targets' => ['192.168.10.111:9100'],
+            'labels'  => {'alias' => 'web-a'}
+          },
+          {
+            'targets' => ['192.168.10.112:9100'],
+            'labels'  => {'alias' => 'web-b'}
           },
         ],
       },

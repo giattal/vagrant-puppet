@@ -1,11 +1,11 @@
 #!/bin/bash
 
-echo "Installing puppet"
+#echo "Installing puppet"
 #wget https://apt.puppetlabs.com/puppet6-release-xenial.deb
 #sudo dpkg -i puppet6-release-xenial.deb
 sudo apt-get update
-apt-get install -y puppetserver --allow-unauthenticated
-systemctl start puppetserver
+#apt-get install -y puppet-release-xenial.deb
+#systemctl start puppet
 echo "Puppet installed!"
 
 echo "Installing node-exporter"

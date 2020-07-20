@@ -1,16 +1,16 @@
-class nginx (
-  $package_name = 'nginx',
-  $service_name = 'nginx',
-  $doc_root = '/var/www/html'
-) {
-  package { $package_name:
-    ensure => present,
+class nginx {
+  package { 'nginx':
+    ensure => installed,
   }
-  service { $service_name:
-    ensure => running,
-    enable => true,
+
+  service { 'nginx':
+    ensure  => true,
+    enable  => true,
+    require => Package['nginx'],
   }
-  file { "$doc_root/index.html":
+
+  file { "/var/www/html/index.html":
     source => "puppet:///modules/nginx/index.html",
   }
 }
+

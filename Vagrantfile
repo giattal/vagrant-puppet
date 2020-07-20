@@ -3,13 +3,13 @@
 
 Vagrant.configure(2) do |config|
 
-#  config.vm.box = "icalvete/ror-ubuntu-18.04-64-puppet"
-#  config.vm.box_version = "0.0.1"
-   config.vm.box = "puppetlabs/ubuntu-16.04-64-puppet"
+  config.vm.box = "icalvete/ror-ubuntu-18.04-64-puppet"
+  config.vm.box_version = "0.0.1"
+#   config.vm.box = "puppetlabs/ubuntu-16.04-64-puppet"
 
-  config.vm.define "web1" do |web|
-    web.vm.hostname = "web1"
-    web.vm.network :private_network, ip: "192.168.10.11"
+  config.vm.define "web-a" do |web|
+    web.vm.hostname = "web-a"
+    web.vm.network :private_network, ip: "192.168.10.111"
 
     web.vm.provider "virtualbox" do |v|
       v.memory = 512
@@ -17,9 +17,9 @@ Vagrant.configure(2) do |config|
     end
   end
 
-  config.vm.define "web2" do |web|
-    web.vm.hostname = "web2"
-    web.vm.network :private_network, ip: "192.168.10.12"
+  config.vm.define "web-b" do |web|
+    web.vm.hostname = "web-b"
+    web.vm.network :private_network, ip: "192.168.10.112"
     
     web.vm.provider "virtualbox" do |v|
       v.memory = 512
@@ -30,7 +30,6 @@ Vagrant.configure(2) do |config|
   config.vm.define "balancer" do |hap|
     hap.vm.hostname = "balancer"
     hap.vm.network :private_network, ip: "192.168.10.10"
-    hap.vm.network "forwarded_port", guest: 8080, host: 8080
     hap.vm.network "forwarded_port", guest: 8888, host: 8888
     hap.vm.network "forwarded_port", guest: 9090, host: 9090
 
