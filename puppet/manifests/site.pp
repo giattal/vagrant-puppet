@@ -56,13 +56,33 @@ node 'balancer' {
           'name'  => 'alert.rules',
           'rules' => [
             {
+              'alert'       => 'InstanceDown',
+              'expr'        => 'up == 0',
+              'for'         => '1m',
+              'labels'      => {'severity' => 'critical'},
+              'annotations' => {
+                'summary'     => 'Instance {{ $labels.alias }} down',
+                'description' => '{{ $labels.alias }} of job {{ $labels.job }} has been down for more than 1 minutes.'
+              },
+            },
+            {
               'alert'       => 'InstanceHighCpuLoad',
-              'expr'        => '100 - (avg by(instance) (irate(node_cpu_seconds_total{mode="idle"}[5m])) * 100) > 80',
+              'expr'        => '100 - (avg by(alias) (irate(node_cpu_seconds_total{mode="idle"}[5m])) * 100) > 80',
               'for'         => '5m',
               'labels'      => {'severity' => 'warning'},
               'annotations' => {
-                'summary'     => 'Instance high CPU load (instance {{ $labels.instance }})',
-                'description' => 'CPU load is > 80%\n  VALUE = {{ $value }}\n  LABELS: {{ $labels }}.'
+                'summary'     => 'Instance high CPU load (instance {{ $labels.alias }})',
+                'description' => 'CPU load is above 80%  VALUE = {{ $value }}  LABELS: {{ $labels }}.'
+              },
+            },
+            {
+              'alert'       => 'InstanceHighMemoryUsage',
+              'expr'        => '(((node_memory_MemTotal_bytes - node_memory_MemFree_bytes -node_memory_Cached_bytes)/(node_memory_MemTotal_bytes)*100)) > 80',
+              'for'         => '5m',
+              'labels'      => {'severity' => 'warning'},
+              'annotations' => {
+                'summary'     => 'High memory usage (instance {{ $labels.alias }})',
+                'description' => 'Memory usage above 75%  VALUE = {{ $value }}  LABELS: {{ $labels }}.'
               },
             },
           ],
