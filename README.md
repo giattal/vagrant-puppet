@@ -1,4 +1,4 @@
-# vagrant-puppet
+# Vagrant-Puppet Test LAB
 Automation with Puppet + Vagrant
 
 * 3 VMs
